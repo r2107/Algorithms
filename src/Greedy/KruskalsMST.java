@@ -1,89 +1,88 @@
 package Greedy;
 
-import java.util.*;
-class Triplet{
-	int sr, d, w;
-	Triplet(int a, int b, int c){sr = a; d = b; w = c;}
-}
-class sortby implements Comparator<Triplet>{
+import java.util.Arrays;
+import java.util.Scanner;
 
+class Edge implements Comparable<Edge> {
+    int src;
+    int des;
+    int w;
 	@Override
-	public int compare(Triplet o1, Triplet o2) {
-		return o1.w - o2.w;
+	public int compareTo(Edge o) {
+		return -(this.w - o.w);
 	}
-
-	
 }
+
 public class KruskalsMST {
 
 	public static void main(String[] args) {
 		Scanner s = new Scanner(System.in);
 		int t = s.nextInt();
-		while(t > 0) {
-			t--;
-			int n = s.nextInt();//no. of vertices
-			int e = s.nextInt();// no. of edges
-			/*
-			ArrayList<ArrayList<Pair>> graph = new ArrayList<>();
-			for(int i = 0; i <= n; i++) {
-				graph.add(new ArrayList<>());
+		while(t-- > 0) {
+			int V = s.nextInt();
+			int E = s.nextInt();
+			Edge input[] = new Edge[E];
+			for(int i = 0; i < E; i++) {
+				input[i] = new Edge();
+				input[i].src = s.nextInt() - 1;
+				input[i].des = s.nextInt() - 1;
+				input[i].w = s.nextInt();
 			}
-			for(int i = 0; i < e; i++) {
-				int src = s.nextInt();
-				int des = s.nextInt();
-				int wt = s.nextInt();
-				graph.get(src).add(new Pair(des, wt));
-				graph.get(des).add(new Pair(src, wt));
+			res = 0;
+			kruskals(input, V);
+			System.out.println(res);
+		}
+	}
+	static long res = 0;
+	private static void kruskals(Edge[] input, int v) {
+		Arrays.sort(input);
+		Edge output[] = new Edge[v - 1];
+		int i = 0;
+		int count = 0;
+		int parent[] = new int[v];
+		for(int j = 0; j < v; j++) {
+			parent[j] = j;
+		}
+		while(count < v - 1) {
+			Edge c = input[i];
+			int srcParent = findParent(parent, c.src);
+			int desParent = findParent(parent, c.des);
+			if(srcParent != desParent) {
+				output[count] = c;
+				count++;
+				parent[srcParent] = desParent;
 			}
-			for(int i = 1; i < graph.size(); i++) {
-				for(int j = 0; j < graph.get(i).size(); j++) {
-					System.out.print(i + "->" + graph.get(i).get(j).des + "(" + graph.get(i).get(j).wt + ") .. ");
-				}
-				System.out.println();
+			i++;
+		}
+		for(int j = 0; j < v - 1; j++) {
+			/*if(output[j].src < output[j].des) {
+				System.out.println(output[j].src + " " + output[j].des + " " + output[j].w);
+			}
+			else {
+				System.out.println(output[j].des + " " + output[j].src + " " + output[j].w);
 			}*/
-			ArrayList<Triplet> graph = new ArrayList<>();
-			for(int i = 0; i < e; i++) {
-				int a = s.nextInt();
-				int b = s.nextInt();
-				int c = s.nextInt();
-				//System.out.println(a + " " + b + " " + c);
-				graph.add(new Triplet(a, b, c));
-			}
-			Collections.sort(graph, new sortby());
-			
-			for(int i = 0; i < e; i++) {
-				System.out.println(graph.get(i).sr + " " + graph.get(i).d + " " + graph.get(i).w);
-			}
-			int minweight = 0;
-			int parent[] = new int[n + 1];
-			//parent[graph.get(0).sr] = -1;
-			//minweight += graph.get(0).w;
-			for(int i = 0; i < e; i++) {
-				int currs = graph.get(i).sr;
-				int currd = graph.get(i).d;
-				if(find(currs, currd, parent)) {
-					minweight += graph.get(i).w;
-					//System.out.print(minweight + " ");
-					if(parent[currs] == 0 && parent[currd] == 0){
-					    parent[currs] = -1;
-					    parent[currd] = -1;
-					}
-					else{
-					    parent[currd] = currs;
-					    parent[currs] = currd;
-					}
-				}
-			}
-			System.out.println(minweight);
+			res += output[j].w;
 		}
 		
-
 	}
-	private static boolean find(int s, int d, int parent[]) {
-		if(parent[s] == -1 && parent[d] == -1) return false;
-		if(parent[s] == -1 || parent[d] == -1) return true;
-		if(parent[s] != 0 && parent[d] != 0) return false;
-		return true;
+
+	private static int findParent(int[] parent, int src) {
+		if(parent[src] == src) {
+			return src;
+		}
+		return findParent(parent, parent[src]);
 	}
 
 }
+/*
+Sample Input
+4 4
+0 1 3
+0 3 5
+1 2 1
+2 3 8
+Sample Output
+1 2 1
+0 1 3
+0 3 5
+*/

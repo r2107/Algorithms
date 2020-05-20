@@ -1,13 +1,10 @@
-package FastInputOutput;
-import java.io.DataInputStream; 
-import java.io.FileInputStream; 
-import java.io.IOException; 
-import java.io.InputStreamReader; 
-import java.util.Scanner; 
-import java.util.StringTokenizer; 
+package DynamicProgramming;
 
-public class FastIOJava { 
-	static class Reader { 
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+public class Knapsack01 {
+    static class Reader { 
 		final private int BUFFER_SIZE = 1 << 16; 
 		private DataInputStream din; 
 		private byte[] buffer; 
@@ -25,23 +22,12 @@ public class FastIOJava {
 			bufferPointer = bytesRead = 0; 
 		} 
 
-		public String nextLine() throws IOException { 
+		public String readLine() throws IOException { 
 			byte[] buf = new byte[64]; // line length 
 			int cnt = 0, c; 
 			while ((c = read()) != -1) 
 			{ 
-				if (c == ' ') 
-					break; 
-				buf[cnt++] = (byte) c; 
-			} 
-			return new String(buf, 0, cnt); 
-		} 
-		public String next() throws IOException { 
-			byte[] buf = new byte[64]; // line length 
-			int cnt = 0, c; 
-			while ((c = read()) != -1) 
-			{ 
-				if (c == ' ') 
+				if (c == '\n') 
 					break; 
 				buf[cnt++] = (byte) c; 
 			} 
@@ -127,16 +113,69 @@ public class FastIOJava {
 				return; 
 			din.close(); 
 		} 
-	} 
-
-	public static void main(String[] args) throws IOException { 
-		Reader s = new Reader(); 
+	}
+	public static void main (String[] args) throws IOException{
+		Reader s = new Reader();
 		int t = s.nextInt();
-		int n = s.nextInt(); 
-		int k = s.nextInt(); 
-		String str = s.next();
-		String str2 = s.nextLine();
-		String str1 = s.nextLine();
-		System.out.println(str1); 
-	} 
-} 
+		while(t > 0){
+		    t--;
+		    int n = s.nextInt();
+		    int w = s.nextInt();
+		    int val[] = new int[n];
+		    int wt[] = new int[n];
+		    for(int i = 0; i < n; i++){
+		        val[i] = s.nextInt();
+		    }
+		    for(int i = 0; i < n; i++){
+		        wt[i] = s.nextInt();
+		    }
+		    // memoized solution
+		    /*int dp[][] = new int[n][w + 1];
+		    for(int i = 0; i < n; i++){
+		        Arrays.fill(dp[i], -1);
+		    }
+		    System.out.println(find(val, wt, 0, w, n, dp));*/
+		    
+		    // dp iterative
+		    int dp[][] = new int[2][w+1];
+		    for(int i = 0; i <= w; i++){
+		        if(wt[0] <= i) dp[0][i] = val[0];
+		        else dp[0][i] = 0;
+		    }
+		    int curr = 1;
+		    for(int i = 1; i < n; i++){
+		        for(int j = 0; j <= w; j++){
+		            int op1 = -1;
+		            if(wt[i] <= j){
+		                op1 = dp[curr^1][j - wt[i]] + val[i];
+		            }
+		            dp[curr][j] = Math.max(op1, dp[curr^1][j]);
+		        }
+		        curr ^= 1;
+		    }
+		    System.out.println(dp[curr^1][w]);
+		}
+	}
+	static int find(int val[], int wt[], int s, int w, int n, int dp[][]){
+	    if(w < 0){
+	        return 0;
+	    }
+	    if(s == n - 1){
+	        if(wt[s] <= w){
+	            return val[s];
+	        }
+	        return 0;
+	    }
+	    if(dp[s][w] != -1) return dp[s][w];
+	    int op1 = 0;
+	    if(w >= wt[s])
+	        op1 = find(val, wt, s + 1, w - wt[s], n, dp) + val[s];
+	    int op2 = find(val, wt, s + 1, w, n, dp);
+	    return dp[s][w] = Math.max(op1, op2);
+	}
+	
+}
+
+
+
+
