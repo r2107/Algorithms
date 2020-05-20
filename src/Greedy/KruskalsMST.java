@@ -9,14 +9,21 @@ class Edge implements Comparable<Edge> {
     int w;
 	@Override
 	public int compareTo(Edge o) {
+<<<<<<< HEAD
 		return -(this.w - o.w);
 	}
 }
+=======
+		return this.w - o.w;
+	}
+  }
+>>>>>>> origin/master
 
 public class KruskalsMST {
 
 	public static void main(String[] args) {
 		Scanner s = new Scanner(System.in);
+<<<<<<< HEAD
 		int t = s.nextInt();
 		while(t-- > 0) {
 			int V = s.nextInt();
@@ -34,6 +41,20 @@ public class KruskalsMST {
 		}
 	}
 	static long res = 0;
+=======
+		int V = s.nextInt();
+		int E = s.nextInt();
+		Edge input[] = new Edge[E];
+		for(int i = 0; i < E; i++) {
+			input[i] = new Edge();
+			input[i].src = s.nextInt();
+			input[i].des = s.nextInt();
+			input[i].w = s.nextInt();
+		}
+		kruskals(input, V);
+	}
+
+>>>>>>> origin/master
 	private static void kruskals(Edge[] input, int v) {
 		Arrays.sort(input);
 		Edge output[] = new Edge[v - 1];
@@ -51,6 +72,7 @@ public class KruskalsMST {
 				output[count] = c;
 				count++;
 				parent[srcParent] = desParent;
+<<<<<<< HEAD
 			}
 			i++;
 		}
@@ -62,6 +84,18 @@ public class KruskalsMST {
 				System.out.println(output[j].des + " " + output[j].src + " " + output[j].w);
 			}*/
 			res += output[j].w;
+=======
+			}
+			i++;
+		}
+		for(int j = 0; j < v - 1; j++) {
+			if(output[j].src < output[j].des) {
+				System.out.println(output[j].src + " " + output[j].des + " " + output[j].w);
+			}
+			else {
+				System.out.println(output[j].des + " " + output[j].src + " " + output[j].w);
+			}
+>>>>>>> origin/master
 		}
 		
 	}
